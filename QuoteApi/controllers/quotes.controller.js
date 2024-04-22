@@ -4,12 +4,17 @@ const prisma = new PrismaClient();
 
 const getQuotes = async (req, res) => {
 	try {
-		const quotes = await prisma.quote.findMany();
+		const quotes = await prisma.quote.findMany({
+			include: {
+				author: true
+			}
+		});
+		console.log(quotes)
 		res.json({
 			quotes: quotes,
 		});
 	} catch (err) {
-		res.json({ message: "Can't get Quotes!" });
+		res.json({ message: "Can't get Quotes!", err: err });
 	}
 };
 
