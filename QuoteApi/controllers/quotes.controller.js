@@ -9,7 +9,6 @@ const getQuotes = async (req, res) => {
 				author: true
 			}
 		});
-		console.log(quotes)
 		res.json({
 			quotes: quotes,
 		});
@@ -59,6 +58,9 @@ const getQuote = async (req, res) => {
 		const quote = await prisma.quote.findUnique({
 			where: {
 				id: id
+			},
+			include:{
+				author: true
 			}
 		})
 		res.json({

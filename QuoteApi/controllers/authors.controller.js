@@ -1,4 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+import { StatusCodes } from "http-status-codes";
+import { createJWTToken } from "../utils/token-handler.js";
 
 const prisma = new PrismaClient();
 
@@ -34,18 +37,49 @@ const getAuthor = async (req, res) => {
 
 const createAuthor = async (req, res) => {
 	try {
-		const newAuthor = await prisma.author.create({
-			data: {
-				...req.body,
-				age: +req.body.age,
-			},
-		});
-		res.json({
-			message: "Author created",
-			author: newAuthor,
-		});
+		const { email } = req.body;
+
+		const author = await prisma.author.findUnique({
+			where: {
+				email: email
+			}
+		})
+
+		if(author != null && author.email === email){
+			res.status(StatusCodes.BAD_REQUEST).json({message: "Author with email already exists"});
+		} else {
+			let hash = await bcrypt.hash(req.body.password, 10);
+
+			const registerAuthor = await prisma.author.create({
+				data: {...req.body, age: +req.body.age, password: hash}
+			});
+
+			res.status(StatusCodes.CREATED).json({message: "User registered Successfully"});
+		}
 	} catch (err) {
 		res.json({ message: "author not added!" });
+	}
+};
+
+const loginAuthor =  async (req, res) => {
+	try {
+		const {email, password} = req.body;
+
+		const author = await prisma.author.findUnique({
+			where: {
+				email: email,
+			},
+		});
+
+		const verifyPassword = bcrypt.compareSync(password, author.password);
+
+		if(verifyPassword){
+			let data = { authorId: author.id, authorName: author.name, }
+			const token = createJWTToken(data);
+			res.status(StatusCodes.CREATED).json({message: "Author LoggedIn", token: token});
+		}
+	} catch (err) {
+		res.status(StatusCodes.BAD_REQUEST).json({error: "Password or Email entered is incorrect. Login again"})
 	}
 };
 
@@ -82,4 +116,4 @@ const deleteAutor = async (req, res) => {
 	}
 };
 
-export { getAuthors, getAuthor, createAuthor, updateAuthor, deleteAutor };
+export { getAuthors, getAuthor, createAuthor, updateAuthor, deleteAutor, loginAuthor };
