@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import "dotenv/config";
 
 const createJWTToken = (data) => {
-    return jwt.sign(data, process.env.JWT_SECRET_ACCESS, { expiresIn: "5h" });
+    return jwt.sign(data, process.env.JWT_SECRET_ACCESS, { expiresIn: "72h" });
 };
 
 const verifyToken = (req, res, next) => {

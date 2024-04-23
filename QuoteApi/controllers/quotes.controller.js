@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { StatusCodes } from "http-status-codes";
 
 const prisma = new PrismaClient();
 
@@ -9,11 +10,11 @@ const getQuotes = async (req, res) => {
 				author: true
 			}
 		});
-		res.json({
+		res.status(StatusCodes.CREATED).json({
 			quotes: quotes,
 		});
 	} catch (err) {
-		res.json({ message: "Can't get Quotes!", err: err });
+		res.status(StatusCodes.BAD_REQUEST).json({ message: "Can't get Quotes!", err: err });
 	}
 };
 
@@ -24,14 +25,17 @@ const createQuote = async (req, res) => {
 				...req.body,
 				authorId: +req.body.authorId,
 			},
+			include: {
+				author: true
+			}
 		});
 
-		res.json({ 
+		res.status(StatusCodes.CREATED).json({ 
 			messgae: "Quote created", 
 			quote: newQuote 
 		});
 	} catch (err) {
-		res.json({ message: "Quote not created!" });
+		res.status(StatusCodes.BAD_REQUEST).json({ message: "Quote not created!" });
 	}
 };
 
@@ -44,11 +48,14 @@ const updateQuote = async (req, res) => {
 			},
 			data: {
 				...req.body, authorId: +req.body.authorId
+			},
+			include: {
+				author: true
 			}
 		});
-		res.json({message: "Quote updated", quote: updatedQuote})
+		res.status(StatusCodes.CREATED).json({message: "Quote updated", quote: updatedQuote})
 	}catch(err){
-	res.json({message: "Quote not updated!"})
+	res.status(StatusCodes.BAD_REQUEST).json({message: "Quote not updated!"})
 	}
 };
 
@@ -63,12 +70,12 @@ const getQuote = async (req, res) => {
 				author: true
 			}
 		})
-		res.json({
+		res.status(StatusCodes.CREATED).json({
 			message: "Quote got successfully",
 			quote: quote
 		})
 	}catch(err){
-	res.json({message: "Can't get quote!"})
+	res.status(StatusCodes.BAD_REQUEST).json({message: "Can't get quote!"})
 	}
 }
 
@@ -80,12 +87,12 @@ const deleteQuote = async (req, res) => {
 				id: id
 			}
 		});
-		res.json({
+		res.status(StatusCodes.CREATED).json({
 			message: "Quote Deleted successfully",
 			quote: deletedQuote
 		})
 	}catch(err){
-		res.json({message: "Quote not deleted"})
+		res.status(StatusCodes.BAD_REQUEST).json({message: "Quote not deleted"})
 	}
 }
 
