@@ -79,7 +79,7 @@ const loginAuthor =  async (req, res) => {
 			res.status(StatusCodes.CREATED).json({message: "Author LoggedIn", token: token});
 		}
 	} catch (err) {
-		res.status(StatusCodes.BAD_REQUEST).json({error: "Password or Email entered is incorrect. Login again"})
+		res.status(StatusCodes.BAD_REQUEST).json({error: "Password or Email entered is incorrect. Login again", err})
 	}
 };
 
@@ -97,7 +97,7 @@ const updateAuthor = async (req, res) => {
 		});
 		res.json({ message: "Author has been updated", data: updatedAuthor });
 	} catch (err) {
-		res.json({ message: "author not updated" });
+		res.json({ message: "author not updated", err});
 	}
 };
 
