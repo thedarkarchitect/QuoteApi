@@ -35,7 +35,7 @@ const createQuote = async (req, res) => {
 			quote: newQuote 
 		});
 	} catch (err) {
-		res.status(StatusCodes.BAD_REQUEST).json({ message: "Quote not created!" });
+		res.status(StatusCodes.BAD_REQUEST).json({ message: "Quote not created!", err });
 	}
 };
 
@@ -55,7 +55,7 @@ const updateQuote = async (req, res) => {
 		});
 		res.status(StatusCodes.CREATED).json({message: "Quote updated", quote: updatedQuote})
 	}catch(err){
-	res.status(StatusCodes.BAD_REQUEST).json({message: "Quote not updated!"})
+	res.status(StatusCodes.BAD_REQUEST).json({message: "Quote not updated!", err})
 	}
 };
 
@@ -75,7 +75,7 @@ const getQuote = async (req, res) => {
 			quote: quote
 		})
 	}catch(err){
-	res.status(StatusCodes.BAD_REQUEST).json({message: "Can't get quote!"})
+	res.status(StatusCodes.BAD_REQUEST).json({message: "Can't get quote!", err})
 	}
 }
 
@@ -92,7 +92,7 @@ const deleteQuote = async (req, res) => {
 			quote: deletedQuote
 		})
 	}catch(err){
-		res.status(StatusCodes.BAD_REQUEST).json({message: "Quote not deleted"})
+		res.status(StatusCodes.BAD_REQUEST).json({message: "Quote not deleted", err})
 	}
 }
 
