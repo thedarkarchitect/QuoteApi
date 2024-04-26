@@ -14,7 +14,7 @@ app.use(cors({
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }));
-app.use("/authors/", authorRouter);
-app.use("/quotes/", quoteRouter);
+app.use("/authors", authorRouter);
+app.use("/quotes", quoteRouter);
 
 export default app;

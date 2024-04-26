@@ -13,7 +13,7 @@ const getAuthors = async (req, res) => {
 			authors: allAuthors,
 		});
 	} catch (err) {
-		res.json({ message: "Can't get Authors!" });
+		res.json({ message: "Can't get Authors!", err });
 	}
 };
 
@@ -31,7 +31,7 @@ const getAuthor = async (req, res) => {
 			author: author,
 		});
 	} catch (err) {
-		res.json({ message: "id doesn't exist" });
+		res.json({ message: "id doesn't exist", err });
 	}
 };
 
@@ -57,7 +57,7 @@ const createAuthor = async (req, res) => {
 			res.status(StatusCodes.CREATED).json({message: "User registered Successfully"});
 		}
 	} catch (err) {
-		res.json({ message: "author not added!" });
+		res.json({ message: "author not added!", err });
 	}
 };
 
