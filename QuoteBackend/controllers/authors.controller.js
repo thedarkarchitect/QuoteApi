@@ -9,7 +9,7 @@ const getAuthors = async (req, res) => {
 	try {
 		const allAuthors = await prisma.author.findMany();
 
-		res.json({
+		res.status(StatusCodes.OK).json({
 			authors: allAuthors,
 		});
 	} catch (err) {
@@ -26,12 +26,18 @@ const getAuthor = async (req, res) => {
 				id: id,
 			},
 		});
-		res.json({
-			message: "Author got Successfully",
-			author: author,
-		});
+		if(author){
+			res.status(StatusCodes.OK).json({
+				message: "Author got Successfully",
+				author: author,
+			});
+		} else {
+			res.status(StatusCodes.NOT_FOUND).json({
+				message: "Author id doesn't exist"
+			})
+		}
 	} catch (err) {
-		res.json({ message: "id doesn't exist", err });
+		res.status(StatusCodes.BAD_REQUEST).json({ message: "id doesn't exist", err });
 	}
 };
 
@@ -46,7 +52,7 @@ const createAuthor = async (req, res) => {
 		})
 
 		if(author != null && author.email === email){
-			res.status(StatusCodes.BAD_REQUEST).json({message: "Author with email already exists"});
+			res.status(StatusCodes.NOT_ACCEPTABLE).json({message: "Author with email already exists"});
 		} else {
 			let hash = await bcrypt.hash(req.body.password, 10);
 
@@ -54,10 +60,10 @@ const createAuthor = async (req, res) => {
 				data: {...req.body, age: +req.body.age, password: hash}
 			});
 
-			res.status(StatusCodes.CREATED).json({message: "User registered Successfully"});
+			res.status(StatusCodes.CREATED).json({message: "Author registered Successfully", registerAuthor});
 		}
 	} catch (err) {
-		res.json({ message: "author not added!", err });
+		res.status(StatusCodes.BAD_REQUEST).json({ message: "Author not added!", err });
 	}
 };
 
@@ -65,11 +71,16 @@ const loginAuthor =  async (req, res) => {
 	try {
 		const {email, password} = req.body;
 
+		if(!email || !password) {
+			return res.status(StatusCodes.NOT_FOUND).json({message: "Provide email and password"})
+		}
+
 		const author = await prisma.author.findUnique({
 			where: {
 				email: email,
 			},
 		});
+
 
 		const verifyPassword = bcrypt.compareSync(password, author.password);
 
@@ -77,9 +88,12 @@ const loginAuthor =  async (req, res) => {
 			let data = { authorId: author.id, authorName: author.name, }
 			const token = createJWTToken(data);
 			res.status(StatusCodes.CREATED).json({message: "Author LoggedIn", token: token});
+		} else {
+			res
 		}
 	} catch (err) {
-		res.status(StatusCodes.BAD_REQUEST).json({error: "Password or Email entered is incorrect. Login again", err})
+		await prisma.$disconnect()
+		res.status(StatusCodes.BAD_REQUEST).json({message: "Password or Email entered is incorrect. Login again"})
 	}
 };
 
@@ -95,9 +109,14 @@ const updateAuthor = async (req, res) => {
 				age: +req.body.age,
 			},
 		});
-		res.json({ message: "Author has been updated", data: updatedAuthor });
-	} catch (err) {
-		res.json({ message: "author not updated", err});
+		if(updateAuthor){
+			res.status(StatusCodes.CREATED).json({ message: "Author has been updated", data: updatedAuthor });
+		} else {
+			res.status(StatusCodes.NOT_IMPLEMENTED).json({ message: "Author has not been updated"})
+		}
+		
+	} catch (error) {
+		res.status(StatusCodes.BAD_REQUEST).json({ message: "Author not updated", error});
 	}
 };
 
@@ -110,9 +129,11 @@ const deleteAutor = async (req, res) => {
 				id: id,
 			},
 		});
-		res.json({ message: "Deleted Author", data: deleteAuthor });
+		
+		res.status(StatusCodes.OK).json({ message: "Deleted Author", data: deleteAuthor });
+		
 	} catch (err) {
-		res.json({ message: "Author Not Deleted", data: err });
+		res.status(StatusCodes.BAD_REQUEST).json({ message: "Author Not Deleted", data: err });
 	}
 };
 
