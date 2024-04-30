@@ -11,10 +11,10 @@ authorRouter.post("/register", validate(authorSchema), createAuthor);
 
 authorRouter.post("/login", loginAuthor);
 
-authorRouter.get("/:id", getAuthor);
+authorRouter.get("/:id", verifyToken, getAuthor);
 
-authorRouter.patch("/:id", updateAuthor);
+authorRouter.patch("/:id", verifyToken, updateAuthor);
 
-authorRouter.delete("/:id", deleteAutor);
+authorRouter.delete("/:id", verifyToken, deleteAutor);
 
 export default authorRouter;

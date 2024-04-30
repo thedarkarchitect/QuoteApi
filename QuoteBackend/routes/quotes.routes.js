@@ -1,18 +1,19 @@
 import { Router } from "express";
+import { verifyToken } from "../utils/token-handler.js";
 import { getQuotes, createQuote, updateQuote, getQuote, deleteQuote } from "../controllers/quotes.controller.js";
 
 
 const quoteRouter = Router();
 
-quoteRouter.get("/", getQuotes);
+quoteRouter.get("/", verifyToken, getQuotes);
 
-quoteRouter.post("/", createQuote);
+quoteRouter.post("/", verifyToken, createQuote);
 
-quoteRouter.get("/:id", getQuote);
+quoteRouter.get("/:id", verifyToken, getQuote);
 
-quoteRouter.patch("/:id", updateQuote);
+quoteRouter.patch("/:id", verifyToken, updateQuote);
 
-quoteRouter.delete("/:id", deleteQuote);
+quoteRouter.delete("/:id", verifyToken, deleteQuote);
 
 
 export default quoteRouter;
