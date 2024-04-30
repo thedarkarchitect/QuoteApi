@@ -71,6 +71,10 @@ const loginAuthor =  async (req, res) => {
 			},
 		});
 
+		if(author === null) {
+			res.json({message: "User does not exit"})
+		}
+
 		const verifyPassword = bcrypt.compareSync(password, author.password);
 
 		if(verifyPassword){
