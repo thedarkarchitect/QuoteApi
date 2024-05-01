@@ -132,8 +132,8 @@ const deleteAutor = async (req, res) => {
 		
 		res.status(StatusCodes.OK).json({ message: "Deleted Author", data: deleteAuthor });
 		
-	} catch (err) {
-		res.status(StatusCodes.BAD_REQUEST).json({ message: "Author Not Deleted", data: err });
+	} catch (error) {
+		res.status(StatusCodes.BAD_REQUEST).json({ message: "Author Not Deleted", error: error });
 	}
 };
 
