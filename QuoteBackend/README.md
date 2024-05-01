@@ -10,7 +10,7 @@ This is a simple quoteApi backend
 
 ```PORT = 3030
 DATABASE_URL = `postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@localhost:${DATABASE_PORT}/${DATABASE_NAME}?schema=public`
-JWT_SECRET_ACCESS =
+JWT_SECRET_ACCESS = {generate a secret key}
 ```
 
 ## Setup prisma
