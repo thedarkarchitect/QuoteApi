@@ -124,11 +124,16 @@ const deleteAutor = async (req, res) => {
 	const id = +req.params.id;
 
 	try {
+
 		const deleteAuthor = await prisma.author.delete({
 			where: {
 				id: id,
 			},
 		});
+
+		if(deleteAuthor){
+			res.status(StatusCodes.NOT_FOUND)
+		}
 		
 		res.status(StatusCodes.OK).json({ message: "Deleted Author", data: deleteAuthor });
 		
