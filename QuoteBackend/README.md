@@ -19,4 +19,4 @@ JWT_SECRET_ACCESS = {generate a secret key}
 
 ## Running the server
 
-```npm run start```
+```npm start```
